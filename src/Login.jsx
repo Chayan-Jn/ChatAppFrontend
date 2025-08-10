@@ -12,7 +12,8 @@ const Login = ()=>{
         const res = await fetch('http://localhost:3000/app/login',{
             method:"POST",
             headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({username,password})
+            body:JSON.stringify({username,password}),
+            credentials:"include"
         });
         if(!res.ok){
             setLoginMessage("Unable to Login! Please try again ");

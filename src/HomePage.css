@@ -1,0 +1,199 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.container{
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+nav{
+    flex:1;
+    min-height: 50px;
+    width: 100%;
+    background-color: rgb(59, 59, 59);
+    color:white;
+}
+main{
+    flex:19;
+    width: 100%;
+    display: flex;
+}
+
+.left{
+    flex:2.5;
+    background-color: #E4FFE1;
+    display: flex;
+    flex-direction: column;
+    justify-content: baseline;
+    align-items: center;
+    position:relative;
+    
+}
+
+.user-search-btn{
+    position: absolute;
+    min-height: 50px;
+    right:10%;
+    top:0.5%;
+    border: none;
+    background:none;
+    font-size: large;
+}
+
+.user-search-input{
+    flex:1;
+    width: 90%;
+    border-radius: 5%;
+    margin-top: 7px;
+    min-height: 50px;
+    border: none;
+
+}
+.friend-list{
+    flex: 19;
+    margin-top: min(5vh,20px);
+    list-style-type: none;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    /* background-color:gray ; */
+    gap: min(10px,5vh);
+    
+}
+.friend{
+    width: 100%;
+    min-height: min(60px,10vh);
+    display: flex;   
+}
+.friend > img{
+    flex:2;
+    min-width: 40px;
+    background-color: #F4FDD9;
+    overflow: hidden;
+    max-width: 100%;
+    max-height: 100%;
+
+}
+.friend > li{
+    flex:8;
+    color:honeydew;
+    font-weight: bold;
+    font-size: x-large;
+    font-family: 'Times New Roman', Times, serif;
+    margin-left: 15px;
+    background-color: #6A8D73;
+    margin-right: 5px;
+    border-radius: 5%;
+    border-top-left-radius: 10%;
+    border-bottom-right-radius: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.right{
+    flex:7.5;
+    background-color: #FFE8C2;
+    display: flex;
+    flex-direction: column;
+}
+
+.right-nav{
+    color: white;
+    margin-top: 7px;
+    min-height: 50px;
+    border: none;
+    background-color: black;
+    display: flex;
+    align-items: center;
+}
+.user-name{
+    margin-left: 10px;
+    font-weight: bold;
+
+}
+
+.right-container{
+    
+    flex: 19;
+    background-image: url('https://wallpapercave.com/wp/wp5205958.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+    
+}
+
+/* Overlay for opacity */
+.right-container::before {
+    content: '';
+    position: absolute;
+    inset: 0; /* trbl 0 0 0 0 */
+    background-color: rgba(0, 0, 100, 0.7); 
+    z-index: 0;
+}
+
+/* to keep content  above overlay */
+.right-container > * {
+    position: relative;
+    z-index: 1;
+}
+
+.sender{
+    align-self: flex-end;
+    left:10px;
+    width: 30%;
+    border-radius: 5%;
+    margin-right: max(2%,10px);
+}
+.receiver{
+    margin-left: max(2%,10px);
+    width: 30%;
+    align-self: flex-start;
+    right:10px;
+    border-radius: 5%;
+}
+.sender > .chat-msg{
+    margin-top:1px;
+    background-color: inherit;
+    height: auto;
+    width: 100%;
+    font-size: max(1vh,20px);
+    text-wrap: wrap;
+    background-color: crimson;
+    color: white;
+    border-radius: 5%;
+    
+}
+.receiver > .chat-msg{
+    text-align: start;
+    background-color: crimson;
+    color: white;
+    height: auto;
+    width: 100%;
+    font-size: max(1vh,20px);
+    text-wrap: wrap;
+    
+}
+.chat-img{
+    object-fit: cover;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
+.not-found{
+    width: 100%;
+    text-align: center;
+    color:crimson;
+    font-weight: bold;
+    font-family: 'Times New Roman', Times, serif;
+    font-size:min(1.5rem,4vh);
+}
