@@ -27,13 +27,31 @@ main{
 
 .left{
     flex:2.5;
-    background-color: #E4FFE1;
+    background-color: #3E6680;
     display: flex;
     flex-direction: column;
     justify-content: baseline;
     align-items: center;
     position:relative;
-    
+    background: linear-gradient(120deg,
+    #1b1f3a,
+    #20a39e,
+    #ffbc42,
+    #ef5b5b,
+    #8b1e5c
+    );
+}
+
+.left::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(200, 0, 55, 0.2);
+    z-index: 0;
+}
+.left > * {
+    position: relative;
+    z-index: 1;
 }
 
 .user-search-btn{
@@ -49,10 +67,11 @@ main{
 .user-search-input{
     flex:1;
     width: 90%;
-    border-radius: 5%;
+    border-radius: 2%;
     margin-top: 7px;
     min-height: 50px;
     border: none;
+    background: linear-gradient(90deg, #ffb347, #ffcc33);
 
 }
 .friend-list{
@@ -87,18 +106,18 @@ main{
     font-size: x-large;
     font-family: 'Times New Roman', Times, serif;
     margin-left: 15px;
-    background-color: #6A8D73;
     margin-right: 5px;
-    border-radius: 5%;
-    border-top-left-radius: 10%;
-    border-bottom-right-radius: 10%;
+    border-top-left-radius: 5%;
+    border-bottom-right-radius: 5%;
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: #FF4F79;
+    opacity: 0.9;
 }
 .right{
     flex:7.5;
-    background-color: #FFE8C2;
+    background-color: black;
     display: flex;
     flex-direction: column;
 }
@@ -122,7 +141,7 @@ main{
     
     flex: 19;
     background-image: url('https://wallpapercave.com/wp/wp5205958.jpg');
-    background-size: cover;
+    background-size: co;
     background-position: center;
     position: relative;
     display: flex;
