@@ -1,14 +1,58 @@
 import { useEffect, useState } from 'react'
 import './HomePage.css'
+import socket  from './socket';
+import { BiSolidSend } from "react-icons/bi";
+
 const HomePage = () => {
   const [searched,setSearched] = useState('');
-  const [returnedUser,setReturnedUser] = useState('')
+  const [returnedUser,setReturnedUser] = useState(''); //{username,userId}
   const [chatHistory,setChatHistory] = useState([]);
+  const [currentUser,setCurrentUser] = useState(null);
+  const [msg,setMsg] = useState('')
 
+  // fetch current user from session storage
+  useEffect(()=>{
+    async function fetchCurrentUser() {
+      try{
+        const userBasicData = {
+          username:sessionStorage.getItem('username'),
+          userId:sessionStorage.getItem('userId')
+        }
+        setCurrentUser(userBasicData)
+        console.log('set current user as ',userBasicData);
+      }
+      catch(err){
+        console.log(err)
+      }
+    }
+    fetchCurrentUser();
+  },[]);
+
+  // logic for removing searched User output 
   useEffect(()=>{
     if(searched == "") setReturnedUser("");
   },[searched]);
   
+  useEffect(()=>{
+    if(!currentUser) return;
+    try{
+      socket.emit('loginUser',(currentUser.userId));
+
+      socket.on('receive-msg',(receivedData)=>{
+        setChatHistory(prev=>[...prev,receivedData])
+      })
+    }
+    catch(err){
+      console.log(err)
+    }
+
+    return ()=>{
+      socket.off('receive-msg');
+    }
+    
+  },[currentUser]);
+
+
   async function handleClick(e){
     e.preventDefault();
     const res = await fetch(`http://localhost:3000/app/${searched}`,{
@@ -51,6 +95,32 @@ const HomePage = () => {
   const handleKeyDown = (e)=>{
     if(e.key == 'Enter') handleClick(e);
   }
+  const handleSendMessage = (e)=>{
+    if(e.key == 'Enter') sendMessage(e);
+  }
+  async function sendMessage(e) {
+    e.preventDefault();
+    const now = new Date();
+    const createdAt =now.toISOString(); 
+    const updatedAt =now.toISOString(); 
+    const newMessage = {
+      sender:currentUser.userId,
+      receiver:returnedUser.userId,
+      text:msg,
+      createdAt,
+      updatedAt
+    }
+    socket.emit('send-msg',
+      {userId:returnedUser.userId,
+        senderId:currentUser.userId,
+        text:msg
+      });
+      //** Handle the image part later
+
+      setChatHistory(prev=>[...prev,newMessage]);
+
+      setMsg('')
+  }
 
 
   return (
@@ -72,11 +142,11 @@ const HomePage = () => {
                 <li>a</li>
               </div>
               <div className='friend'>
-                <img src="" alt="" />
+                <img src="https://wallpapercave.com/w/wp8903722.jpg" alt="" />
                 <li>b</li>
               </div>
               <div className='friend'>
-                <img src="" alt="" />
+                <img src="https://wallpapercave.com/w/wp8903722.jpg" alt="" />
                 <li>c</li>
               </div>
             </ul>}
@@ -121,10 +191,21 @@ const HomePage = () => {
                 })
               }
             </div>
+            <div className='send-msg'>
+                  <div className='send-msg-input'>
+                    <input placeholder='Enter a message' 
+                    value={msg}
+                    onChange={e=>setMsg(e.target.value)}
+                    onKeyDown={handleSendMessage}/>
+                  </div>
+                  <div className='send-msg-btn'>
+                    <BiSolidSend className='send-msg-btn-logo' onClick={sendMessage}/>
+                  </div>
+              </div>
           </div>
         </main>
     </div>
   )
 }
 
-export default HomePage
+export default HomePage;

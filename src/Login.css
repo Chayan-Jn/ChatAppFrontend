@@ -57,3 +57,40 @@ input{
     font-weight: bold;
     color: rgb(125, 5, 149);
 }
+.right{
+    position: relative;
+}
+
+.send-msg{
+    position: absolute;
+    bottom: 20px;
+    display: flex;
+    height: min(10vh,50px);
+    width: 100%;
+    justify-content: space-around;
+}
+
+.send-msg-input{
+    margin-left: 10%;
+    max-width: 60%;
+    flex:8;
+    height: 100%;
+}
+.send-msg-input > input{
+    max-height:100% ;
+}
+.send-msg-btn{
+    max-width: 20%;
+    flex:2;
+    height: 100%;
+}
+.send-msg-btn-logo{
+    height: 100%;
+    width: 100%;
+    color: yellow;
+    margin-left: max(-40%);
+}
+.send-msg-btn-logo:hover{
+    color: darkgoldenrod;
+    cursor: pointer;
+}

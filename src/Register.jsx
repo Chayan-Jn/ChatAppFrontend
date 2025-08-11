@@ -36,8 +36,20 @@ const Register = ()=>{
       }
       if(data.success==true){
         setRegisterMsg(data.message);
-        localStorage.setItem('userId',data.user._id)
-        localStorage.setItem('username',data.user.username)
+        
+        if(data.message == "User already exists"){
+          setTimeout(()=>{
+            console.log('User already exists, redirecting to login page')
+            navigate('/chat-app/login')
+          },1000)
+          sessionStorage.setItem('userId',data.user.userId)
+          sessionStorage.setItem('username',data.user.username)
+          return;
+        }
+        console.log('setting data to sessio storage')
+        sessionStorage.setItem('userId',data.user.userId)
+        sessionStorage.setItem('username',data.user.username)
+        console.log('data saved in session storage')
 
         // Login is successful so navigate to login page
         setTimeout(()=>{
