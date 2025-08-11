@@ -8,24 +8,25 @@
     width: 100vw;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    overflow: hidden;
 }
 
 nav{
-    flex:1;
-    min-height: 50px;
+    height: 50px;
     width: 100%;
     background-color: rgb(59, 59, 59);
     color:white;
+    flex-shrink: 0;
 }
 main{
-    flex:19;
+    flex: 1;
     width: 100%;
     display: flex;
+    overflow: hidden;
 }
 
 .left{
+    height: 100%;
     flex:2.5;
     background-color: #3E6680;
     display: flex;
@@ -72,24 +73,26 @@ main{
     min-height: 50px;
     border: none;
     background: linear-gradient(90deg, #ffb347, #ffcc33);
-
 }
+
 .friend-list{
+    flex:1;
+    overflow-y: auto;
     flex: 19;
     margin-top: min(5vh,20px);
     list-style-type: none;
     width: 90%;
     display: flex;
     flex-direction: column;
-    /* background-color:gray ; */
     gap: min(10px,5vh);
-    
 }
+
 .friend{
     width: 100%;
     min-height: min(60px,10vh);
     display: flex;   
 }
+
 .friend > img{
     flex:2;
     min-width: 40px;
@@ -97,8 +100,8 @@ main{
     overflow: hidden;
     max-width: 100%;
     max-height: 100%;
-
 }
+
 .friend > li{
     flex:8;
     color:honeydew;
@@ -115,51 +118,84 @@ main{
     background-color: #FF4F79;
     opacity: 0.9;
 }
+
 .right{
     flex:7.5;
-    background-color: black;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    overflow: hidden;
 }
 
-.right-nav{
+.right-nav {
+    height: 50px;
     color: white;
-    margin-top: 7px;
-    min-height: 50px;
-    border: none;
     background-color: black;
     display: flex;
     align-items: center;
+    flex-shrink: 0;
 }
-.user-name{
-    margin-left: 10px;
-    font-weight: bold;
-
-}
-
+  
 .right-container{
-    
-    flex: 19;
+    flex: 1;
+    overflow-y:auto;
     background-image: url('https://wallpapercave.com/wp/wp5205958.jpg');
-    background-size: co;
     background-position: center;
+    background-size: cover;
     position: relative;
     display: flex;
     flex-direction: column;
     gap:10px;
-    
+    padding-bottom:max(10%,20px);
 }
 
-/* Overlay for opacity */
-.right-container::before {
-    content: '';
+
+
+.send-msg {
     position: absolute;
-    inset: 0; /* trbl 0 0 0 0 */
-    background-color: rgba(0, 0, 100, 0.7); 
-    z-index: 0;
+    bottom: 0px;
+    height: min(60px,8vh);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    z-index: 100;
+    background-color: rgb(1, 1, 21);
+    flex-shrink: 0;
+}
+  
+.send-msg-input{
+    flex: 1;
+    height: 40px;
 }
 
-/* to keep content  above overlay */
+.send-msg-input > input {
+    height: 100%;
+    width: 100%;
+    padding: 0 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+.send-msg-btn{
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.send-msg-btn-logo{
+    height: 3rem;
+    width: 3rem;
+    color: white;
+}
+
+.user-name{
+    margin-left: 10px;
+    font-weight: bold;
+}
+
 .right-container > * {
     position: relative;
     z-index: 1;
@@ -167,46 +203,52 @@ main{
 
 .sender{
     align-self: flex-end;
-    left:10px;
     width: 30%;
     border-radius: 5%;
     margin-right: max(2%,10px);
+    margin-bottom: 5px;
 }
+
 .receiver{
     margin-left: max(2%,10px);
     width: 30%;
     align-self: flex-start;
-    right:10px;
     border-radius: 5%;
+    margin-bottom: 5px;
 }
+
 .sender > .chat-msg{
-    margin-top:1px;
-    background-color: inherit;
+    background-color: rgba(17, 113, 87, 0.95);
+    opacity: 9;
+    color: rgb(250, 246, 246);
     height: auto;
     width: 100%;
-    font-size: max(1vh,20px);
+    font-size: max(1vh,16px);
     text-wrap: wrap;
-    background-color: crimson;
-    color: white;
-    border-radius: 5%;
-    
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-weight: bold;
+
 }
+
 .receiver > .chat-msg{
     text-align: start;
-    background-color: crimson;
+    background-color: #444;
     color: white;
     height: auto;
     width: 100%;
-    font-size: max(1vh,20px);
+    font-size: max(1vh,16px);
     text-wrap: wrap;
-    
+    border-radius: 10px;
+    padding: 8px 12px;
 }
+
 .chat-img{
     object-fit: cover;
     max-width: 100%;
-    max-height: 100%;
+    max-height: 200px;
+    border-radius: 10px;
 }
-
 
 .not-found{
     width: 100%;
@@ -215,4 +257,5 @@ main{
     font-weight: bold;
     font-family: 'Times New Roman', Times, serif;
     font-size:min(1.5rem,4vh);
+    padding: 20px;
 }

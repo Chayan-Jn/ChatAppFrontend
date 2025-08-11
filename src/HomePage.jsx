@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './HomePage.css'
 import socket  from './socket';
 import { BiSolidSend } from "react-icons/bi";
@@ -9,6 +9,15 @@ const HomePage = () => {
   const [chatHistory,setChatHistory] = useState([]);
   const [currentUser,setCurrentUser] = useState(null);
   const [msg,setMsg] = useState('')
+  const rightContainerRef = useRef(null); 
+
+  // for reload
+  useEffect(() => {
+    setSearched('');
+    setReturnedUser('');
+    setChatHistory([]);
+  }, []);
+  
 
   // fetch current user from session storage
   useEffect(()=>{
@@ -52,9 +61,21 @@ const HomePage = () => {
     
   },[currentUser]);
 
+  useEffect(()=>{
+    if(rightContainerRef.current){
+      rightContainerRef.current.scrollTop = rightContainerRef.current.scrollHeight;
+    }
+  },[chatHistory]);
 
   async function handleClick(e){
     e.preventDefault();
+
+    if (!searched.trim()) {
+      setReturnedUser('');
+      setChatHistory([]);
+      return;
+    }
+  
     const res = await fetch(`http://localhost:3000/app/${searched}`,{
       method:"GET",
       headers:{
@@ -69,9 +90,15 @@ const HomePage = () => {
     const data = await res.json();
     setReturnedUser
     ({username:data.username,userId:data.userId}); 
+    setChatHistory([]);  // clear old chat history for new user
   }
   async function openChat(e){
     console.log("open chat runs")
+    console.log(chatHistory)
+    if(chatHistory.length != 0 || !returnedUser.userId){
+      console.log("not fetching bcz chatHistory is not empty or returnedUser is empty")
+      return;
+    }
     e.preventDefault();
     const res = await fetch(`http://localhost:3000/app/chat/${searched}`,{
       method:"POST",
@@ -172,15 +199,20 @@ const HomePage = () => {
           </div>
           <div className='right'>
             <div className='right-nav'>
-              <div className='user-name'>
+              {returnedUser && <div className='user-name'>
                 {returnedUser.username}
-              </div>
+              </div>}
             </div>
-            <div  className='right-container'>
-              { returnedUser &&
+            <div  className='right-container'
+            ref={rightContainerRef}>
+              { 
+              returnedUser &&
                 chatHistory.map((msg,index)=>{
+                  const isSentByCurrentUser = msg.sender ==currentUser.userId;
+                  console.log(isSentByCurrentUser);
+                  console.log(msg.sender,currentUser)
                   return(
-                        <div key={index} className={msg.receiver == returnedUser.userId ? 'sender':'receiver'}>
+                        <div key={index} className={isSentByCurrentUser ? 'sender':'receiver'}>
                           {msg.text ? (
                             <p className='chat-msg'>
                             {msg.text}</p>): 
