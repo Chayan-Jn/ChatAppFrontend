@@ -42,13 +42,9 @@ const Register = ()=>{
             console.log('User already exists, redirecting to login page')
             navigate('/chat-app/login')
           },1000)
-          sessionStorage.setItem('userId',data.user.userId)
-          sessionStorage.setItem('username',data.user.username)
           return;
         }
         console.log('setting data to sessio storage')
-        sessionStorage.setItem('userId',data.user.userId)
-        sessionStorage.setItem('username',data.user.username)
         console.log('data saved in session storage')
 
         // Login is successful so navigate to login page
