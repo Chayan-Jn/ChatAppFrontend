@@ -206,7 +206,10 @@ main{
     width: 30%;
     border-radius: 5%;
     margin-right: max(2%,10px);
-    margin-bottom: 5px;
+    margin-bottom: 1px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere; 
 }
 
 .receiver{
@@ -215,6 +218,9 @@ main{
     align-self: flex-start;
     border-radius: 5%;
     margin-bottom: 5px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere; 
 }
 
 .sender > .chat-msg{

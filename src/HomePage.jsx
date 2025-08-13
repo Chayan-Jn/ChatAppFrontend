@@ -137,12 +137,16 @@ const HomePage = () => {
       createdAt,
       updatedAt
     }
+    console.log("current user is ",currentUser.username);
+    console.log("other user is ",returnedUser.username);
+    const chatId = [currentUser.username.trim(),returnedUser.username.trim()].sort().join('_')
     socket.emit('send-msg',
       {userId:returnedUser.userId,
         senderId:currentUser.userId,
-        text:msg
+        text:msg,
+        chatId:chatId
       });
-      //** Handle the image part later
+      //**Will Handle the image part later
 
       setChatHistory(prev=>[...prev,newMessage]);
 
