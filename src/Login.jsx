@@ -23,9 +23,6 @@ const Login = ()=>{
         }
         const data = await res.json();
         setLoginMessage(data.message);
-        // should save current user in sessionStorage
-        sessionStorage.setItem('username', data.user.username);
-        sessionStorage.setItem('userId', data.user.userId);
         setTimeout(()=>{
             navigate('/chat-app/home')
             console.log("Logged in, redirecting to home page")

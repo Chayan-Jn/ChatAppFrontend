@@ -34,20 +34,21 @@ main{
     justify-content: baseline;
     align-items: center;
     position:relative;
-    background: linear-gradient(120deg,
+    /* background: linear-gradient(120deg,
     #1b1f3a,
     #20a39e,
     #ffbc42,
     #ef5b5b,
     #8b1e5c
-    );
+    ); */
+    background-color: black;
 }
 
 .left::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(200, 0, 55, 0.2);
+    background: black;
     z-index: 0;
 }
 .left > * {
@@ -72,7 +73,9 @@ main{
     margin-top: 7px;
     min-height: 50px;
     border: none;
-    background: linear-gradient(90deg, #ffb347, #ffcc33);
+    background-color: #292828;
+    color: white;
+    font-weight: bold;
 }
 
 .friend-list{
@@ -89,8 +92,10 @@ main{
 
 .friend{
     width: 100%;
-    min-height: min(60px,10vh);
+    min-height: min(50px,10vh);
     display: flex;   
+    background-color: #fa3d1c;
+    color: honeydew;
 }
 
 .friend > img{
@@ -104,7 +109,6 @@ main{
 
 .friend > li{
     flex:8;
-    color:honeydew;
     font-weight: bold;
     font-size: x-large;
     font-family: 'Times New Roman', Times, serif;
@@ -115,10 +119,13 @@ main{
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #FF4F79;
-    opacity: 0.9;
-}
 
+}
+.friend:hover{
+    background-color: honeydew;
+    cursor: pointer;
+    color: #1b1f3a;
+}
 .right{
     flex:7.5;
     display: flex;
@@ -139,7 +146,7 @@ main{
 .right-container{
     flex: 1;
     overflow-y:auto;
-    background-image: url('https://wallpapercave.com/wp/wp5205958.jpg');
+    background-image: url('https://i.ibb.co/CB3cxxC/20230103230732-1.jpg');
     background-position: center;
     background-size: cover;
     position: relative;
@@ -209,7 +216,8 @@ main{
     margin-bottom: 1px;
     white-space: pre-wrap;
     word-break: break-word;
-    overflow-wrap: anywhere; 
+    overflow-wrap: anywhere;
+    box-shadow: 5px 5px 3px rgb(7, 7, 7); 
 }
 
 .receiver{
@@ -221,25 +229,31 @@ main{
     white-space: pre-wrap;
     word-break: break-word;
     overflow-wrap: anywhere; 
+
 }
+
 
 .sender > .chat-msg{
     background-color: rgba(17, 113, 87, 0.95);
     opacity: 9;
-    color: rgb(250, 246, 246);
+    /* color: rgb(250, 246, 246); */
+    background-color: white;
+    color: #1b1f3a;
     height: auto;
     width: 100%;
     font-size: max(1vh,16px);
     text-wrap: wrap;
     border-radius: 10px;
     padding: 8px 12px;
-    font-weight: bold;
+    font-weight: bolder;
+    font-size: large;
 
 }
 
 .receiver > .chat-msg{
     text-align: start;
     background-color: #444;
+    background-color: #292828;
     color: white;
     height: auto;
     width: 100%;
@@ -247,6 +261,8 @@ main{
     text-wrap: wrap;
     border-radius: 10px;
     padding: 8px 12px;
+    font-size: large;
+    font-weight: bold;
 }
 
 .chat-img{
@@ -264,4 +280,34 @@ main{
     font-family: 'Times New Roman', Times, serif;
     font-size:min(1.5rem,4vh);
     padding: 20px;
+}
+
+.right-nav-empty{
+    padding-left:5%;
+    font-weight:bold
+}
+
+.main-nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    text-shadow: 2px 2px 2px black;
+    font-size: x-large;
+}
+
+.home{
+    background:lightsalmon;
+    border-radius: 5%;
+    margin-left: 2%;
+    box-shadow: 1px 1px 5px rgb(183, 59, 11);
+    color: wheat;
+}
+
+.user-profile{
+    border-radius: 5%;
+    margin-right: 2%;
+    background-color: goldenrod;
+    box-shadow: 1px 1px 5px gold;
+    cursor: pointer;
 }

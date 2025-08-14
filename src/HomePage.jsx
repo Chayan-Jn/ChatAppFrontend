@@ -18,26 +18,40 @@ const HomePage = () => {
     setSearched('');
     setsearchResult({ username: '', userId: '' });
     setChatHistory([]);
+    setFriendHistory(JSON.parse(sessionStorage.getItem('friend-history')) || [])
   }, []);
   
 
-  // fetch current user from session storage
-  useEffect(()=>{
+  // fetching current user from session storage
+  useEffect(() => {
     async function fetchCurrentUser() {
-      try{
-        const userBasicData = {
-          username:sessionStorage.getItem('username'),
-          userId:sessionStorage.getItem('userId')
+      console.log('fetchCurrentUser runs')
+        try {
+            const res = await fetch('http://localhost:3000/app/get-current-user', {
+                credentials: 'include'
+            });
+            if (!res.ok) return;
+
+            const data = await res.json();
+            const user = data.data; // {username, userId}
+
+            // If user changes, clear friendHistory
+          if (!currentUser || currentUser.userId !== user.userId) {
+            setFriendHistory([]); // clear old friend history
+          }
+
+            setCurrentUser(user);
+
+            //store in sessionStorage
+            sessionStorage.setItem('username', user.username);
+            sessionStorage.setItem('userId', user.userId);
+        } catch (err) {
+            console.log(err);
+            setCurrentUser(null);
         }
-        setCurrentUser(userBasicData)
-        console.log('set current user as ',userBasicData);
-      }
-      catch(err){
-        console.log(err)
-      }
     }
     fetchCurrentUser();
-  },[]);
+}, []);
 
   // // logic for removing searched User output 
   useEffect(()=>{
@@ -50,12 +64,16 @@ const HomePage = () => {
   // Add the previously searched friend to the friendHistory
   useEffect(()=>{
     if(searchResult?.username.trim()){
+      if(searchResult.username == "Not found") return;
       const notAlreadyInHistory = friendHistory.every(
         f => f.username !== searchResult.username
       );
       if (notAlreadyInHistory) {
         setFriendHistory(prev => [...prev, searchResult]);
       }
+      const savedHistory = JSON.stringify(friendHistory);
+      sessionStorage.setItem('friend-history',savedHistory)
+
       // Can add logic to put it at top tho
       // after sending a msg
     }
@@ -78,7 +96,7 @@ const HomePage = () => {
       socket.off('receive-msg');
     }
     
-  },[currentUser,friendHistory]);
+  },[currentUser]);
 
   useEffect(()=>{
     if(rightContainerRef.current){
@@ -181,7 +199,7 @@ const HomePage = () => {
 
   async function openFriendChat(e,friend) {
     // because you want the new ChatHistory
-    if(friend.userId){
+    if(searchResult.userId !== friend.userId){
       setChatHistory([]);
       setsearchResult(friend);
     }
@@ -189,8 +207,9 @@ const HomePage = () => {
 
   return (
     <div className="container">
-        <nav>
-          <div>Home</div>
+        <nav className='main-nav'>
+          <div className='home'>Add Friends</div>
+          <div className='user-profile'>{currentUser &&currentUser.username}</div>
         </nav>
         <main>
           <div className='left'>
@@ -208,7 +227,7 @@ const HomePage = () => {
                     key={friend.userId}
                     onClick={e=>openFriendChat(e,friend)}
                     className='friend'>
-                    <img src="https://wallpapercave.com/w/wp8903722.jpg" alt="" />
+                    <img src="https://mrwallpaper.com/images/high/rain-world-game-scene-o7jp497z352uy4ot.webp" alt="" />
                     <li>{friend.username}</li>
                   </div>
                   )
@@ -227,7 +246,7 @@ const HomePage = () => {
               }  
               {searchResult.username && searchResult.username!="Not found" &&
               <div className='friend' onClick={openChat}>
-                <img src="https://wallpapercave.com/w/wp8903722.jpg" alt="" />
+                <img src="https://mrwallpaper.com/images/high/rain-world-game-scene-o7jp497z352uy4ot.webp" alt="" />
                 <li>{searchResult.username}</li>
               </div>
               }
@@ -237,16 +256,20 @@ const HomePage = () => {
           </div>
           <div className='right'>
             <div className='right-nav'>
-              {searchResult.username && <div className='user-name'>
+              {searchResult.username ? <div className='user-name'>
                 {searchResult.username}
-              </div>}
+              </div> :
+              <div className='right-nav right-nav-empty'>
+                
+              </div>
+              }
             </div>
             <div  className='right-container'
             ref={rightContainerRef}>
               { 
               searchResult.username &&
                 chatHistory.map((msg,index)=>{
-                  const isSentByCurrentUser = String(msg.sender) == String(currentUser.userId);
+                  const isSentByCurrentUser = String(msg.sender) == String(currentUser?.userId);
                   console.log(isSentByCurrentUser);
                   console.log(msg.sender,currentUser)
                   return(
@@ -261,7 +284,9 @@ const HomePage = () => {
                 })
               }
             </div>
-            <div className='send-msg'>
+            {searchResult.username &&
+             searchResult.username != "Not found" &&
+             <div className='send-msg'>
                   <div className='send-msg-input'>
                     <input placeholder='Enter a message' 
                     value={msg}
@@ -271,7 +296,7 @@ const HomePage = () => {
                   <div className='send-msg-btn'>
                     <BiSolidSend className='send-msg-btn-logo' onClick={sendMessage}/>
                   </div>
-              </div>
+              </div>}
           </div>
         </main>
     </div>
