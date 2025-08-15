@@ -96,6 +96,7 @@ main{
     display: flex;   
     background-color: #fa3d1c;
     color: honeydew;
+    transition: color 0.3s;
 }
 
 .friend > img{
@@ -193,9 +194,10 @@ main{
 }
 
 .send-msg-btn-logo{
-    height: 3rem;
+    height: 2rem;
     width: 3rem;
     color: white;
+    margin-bottom: min(5px,1vw);
 }
 
 .user-name{
@@ -275,7 +277,7 @@ main{
 .not-found{
     width: 100%;
     text-align: center;
-    color:crimson;
+    color:white;
     font-weight: bold;
     font-family: 'Times New Roman', Times, serif;
     font-size:min(1.5rem,4vh);
@@ -297,7 +299,7 @@ main{
 }
 
 .home{
-    background:lightsalmon;
+    background:#FE4F2D;
     border-radius: 5%;
     margin-left: 2%;
     box-shadow: 1px 1px 5px rgb(183, 59, 11);
@@ -307,7 +309,34 @@ main{
 .user-profile{
     border-radius: 5%;
     margin-right: 2%;
-    background-color: goldenrod;
+    background-color: #FAAB33;
     box-shadow: 1px 1px 5px gold;
     cursor: pointer;
+}
+
+.other-user-name{
+    font-weight: bold;
+    font-size: large;
+    color: black;
+    box-shadow: 1px 1px 10px orange;
+    background-color: orangered;
+}
+
+.upload-image{
+    color: white;
+}
+
+#image-file{
+    display: none;
+}
+
+.gallery{
+    height: 2rem;
+    width: 3rem;
+    font-size: large;
+    cursor: pointer;
+}
+
+.gallery:hover{
+    color: crimson;
 }

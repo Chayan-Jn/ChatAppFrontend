@@ -2,16 +2,18 @@ import { useEffect, useRef, useState } from 'react'
 import './HomePage.css'
 import socket  from './socket';
 import { BiSolidSend } from "react-icons/bi";
+import { FaRegImages } from "react-icons/fa";
 
 const HomePage = () => {
   const [searched,setSearched] = useState('');
   const [searchResult,setsearchResult] = useState({ username: '', userId: '' }); //{username,userId}
-  const [searchError, setSearchError] = useState('');
   const [chatHistory,setChatHistory] = useState([]);
   const [currentUser,setCurrentUser] = useState(null);
   const [msg,setMsg] = useState('')
   const rightContainerRef = useRef(null);
-  const [friendHistory,setFriendHistory] = useState([]); 
+  const [friendHistory,setFriendHistory] = useState(JSON.parse(sessionStorage.getItem('friend-history')) || []); 
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   // for reload
   useEffect(() => {
@@ -35,13 +37,16 @@ const HomePage = () => {
             const data = await res.json();
             const user = data.data; // {username, userId}
 
-            // If user changes, clear friendHistory
-          if (!currentUser || currentUser.userId !== user.userId) {
-            setFriendHistory([]); // clear old friend history
-          }
+            // If user changes clear friendHistory
+            const previousUserId = sessionStorage.getItem('userId');
+            if(previousUserId && previousUserId !== user.userId){
+              setFriendHistory([]);
+            }
 
             setCurrentUser(user);
-
+          // if (!currentUser || currentUser.userId !== user.userId) {
+          //   setFriendHistory([]); 
+          // }
             //store in sessionStorage
             sessionStorage.setItem('username', user.username);
             sessionStorage.setItem('userId', user.userId);
@@ -51,7 +56,7 @@ const HomePage = () => {
         }
     }
     fetchCurrentUser();
-}, []);
+  }, []);
 
   // // logic for removing searched User output 
   useEffect(()=>{
@@ -71,29 +76,31 @@ const HomePage = () => {
       if (notAlreadyInHistory) {
         setFriendHistory(prev => [...prev, searchResult]);
       }
-      const savedHistory = JSON.stringify(friendHistory);
-      sessionStorage.setItem('friend-history',savedHistory)
-
       // Can add logic to put it at top tho
       // after sending a msg
     }
-  },[searchResult,friendHistory]);
+  },[searchResult]);
+
+  useEffect(()=>{
+    sessionStorage.setItem('friend-history',JSON.stringify(friendHistory));
+  },[friendHistory]);
   
+  const handleReceivedMsg = (receivedData)=>{
+    if(receivedData.sender !== currentUser?.userId)
+      setChatHistory(prev=>[...prev,receivedData])
+  }
   useEffect(()=>{
     if(!currentUser) return;
     try{
       socket.emit('loginUser',(currentUser.userId));
-
-      socket.on('receive-msg',(receivedData)=>{
-        setChatHistory(prev=>[...prev,receivedData])
-      })
+      socket.on('receive-msg', handleReceivedMsg)
     }
     catch(err){
       console.log(err)
     }
 
     return ()=>{
-      socket.off('receive-msg');
+      socket.off('receive-msg',handleReceivedMsg);
     }
     
   },[currentUser]);
@@ -164,31 +171,42 @@ const HomePage = () => {
   }
   async function sendMessage(e) {
     e.preventDefault();
-    const now = new Date();
-    const createdAt =now.toISOString(); 
-    const updatedAt =now.toISOString(); 
-    const newMessage = {
-      sender:currentUser.userId,
-      receiver:searchResult.userId,
-      text:msg,
-      createdAt,
-      updatedAt
-    }
-    console.log("current user is ",currentUser.username);
-    console.log("other user is ",searchResult.username);
-    const chatId = [currentUser.username.trim(),searchResult.username.trim()].sort().join('_')
-    socket.emit('send-msg',
-      {userId:searchResult.userId,
-        senderId:currentUser.userId,
-        text:msg,
-        chatId:chatId
+  
+    // Send text
+    if (msg.trim()) {
+      const now = new Date();
+      const chatId = [currentUser.username.trim(), searchResult.username.trim()].sort().join('_');
+      const newMessage = {
+        sender: currentUser.userId,
+        receiver: searchResult.userId,
+        text: msg,
+        imageUrl: null,
+        chatId
+      };
+  
+      setChatHistory(prev => [...prev, newMessage]);
+  
+      socket.emit('send-msg', {
+        sender: currentUser.userId,
+        receiver: searchResult.userId,
+        text: msg,
+        imageUrl: null,
+        chatId
       });
-      //**Will Handle the image part later
 
-      setChatHistory(prev=>[...prev,newMessage]);
-
-      setMsg('')
+  
+      setMsg('');
+    }
+  
+    // Send image, if thre is any
+    if (selectedImage) {
+      const imageToSend = selectedImage;
+      setSelectedImage(null);
+      setPreviewUrl(null);
+      await handleImgUpload(imageToSend);
+    }
   }
+  
 
   useEffect(() => {
     if (searchResult.userId) {
@@ -203,6 +221,43 @@ const HomePage = () => {
       setChatHistory([]);
       setsearchResult(friend);
     }
+  }
+
+  const handleImageSelect = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setSelectedImage(file);
+    setPreviewUrl(URL.createObjectURL(file)); //to preview before sending
+  };
+
+  async function handleImgUpload(file) {
+
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const res = await fetch(`http://localhost:3000/app/images/${searchResult.username}`,{
+      method:"POST",
+      body:formData,
+      credentials:'include'
+    });
+    if(!res.ok){
+      console.log('error sending Image')
+      return;
+    }
+    const data = await res.json();
+    const msgData = data.msgData;
+    const newMessage = {
+      sender:currentUser.userId,
+      receiver:searchResult.userId,
+      text:'',
+      imageUrl:msgData.imageUrl,
+      chatId:msgData.chatId,
+    }
+    setChatHistory((prev) => [...prev, newMessage]);
+    socket.emit('send-msg',newMessage);
+      setSelectedImage(null);
+      setPreviewUrl(null);
   }
 
   return (
@@ -257,7 +312,7 @@ const HomePage = () => {
           <div className='right'>
             <div className='right-nav'>
               {searchResult.username ? <div className='user-name'>
-                {searchResult.username}
+                <div className='other-user-name'>{searchResult.username}</div>
               </div> :
               <div className='right-nav right-nav-empty'>
                 
@@ -293,6 +348,17 @@ const HomePage = () => {
                     onChange={e=>setMsg(e.target.value)}
                     onKeyDown={handleSendMessage}/>
                   </div>
+                  <label htmlFor="image-file" className='upload-image'>
+                    {!previewUrl && <span><FaRegImages className='gallery' /></span>}
+                  </label>
+                  {previewUrl && (
+                    <div className="preview">
+                      <img src={previewUrl} alt="preview" style={{ maxHeight: '100px' }} />
+                    </div>
+                  )}
+                  <input type='file' id='image-file' 
+                  accept='image/*'
+                  onChange={handleImageSelect} />
                   <div className='send-msg-btn'>
                     <BiSolidSend className='send-msg-btn-logo' onClick={sendMessage}/>
                   </div>
