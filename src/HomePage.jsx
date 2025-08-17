@@ -87,15 +87,8 @@ const HomePage = () => {
   
   const handleReceivedMsg = (receivedData)=>{
     if (!currentUser) return;
-    if(receivedData.sender !== currentUser?.userId){
-      // Only add messages that belong to the currently open chat
-      const chatId = [currentUser.username.trim(), searchResult.username.trim()].sort().join('_');
-
-      if (receivedData.chatId === chatId) {
-        setChatHistory(prev => [...prev, receivedData]);
-      }
-    }
-
+    if(receivedData.sender !== currentUser?.userId)
+      setChatHistory(prev=>[...prev,receivedData])
   }
   useEffect(()=>{
     if(!currentUser) return;
