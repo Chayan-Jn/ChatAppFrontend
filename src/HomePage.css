@@ -305,6 +305,7 @@ main{
     margin-left: 2%;
     box-shadow: 1px 1px 5px rgb(183, 59, 11);
     color: wheat;
+    padding: 5px;
 }
 
 .user-profile{

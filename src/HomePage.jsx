@@ -29,7 +29,7 @@ const HomePage = () => {
     async function fetchCurrentUser() {
       console.log('fetchCurrentUser runs')
         try {
-            const res = await fetch('http://localhost:3000/app/get-current-user', {
+            const res = await fetch('/app/get-current-user', {
                 credentials: 'include'
             });
             if (!res.ok) return;
@@ -86,8 +86,16 @@ const HomePage = () => {
   },[friendHistory]);
   
   const handleReceivedMsg = (receivedData)=>{
-    if(receivedData.sender !== currentUser?.userId)
-      setChatHistory(prev=>[...prev,receivedData])
+    if (!currentUser) return;
+    if(receivedData.sender !== currentUser?.userId){
+      // Only add messages that belong to the currently open chat
+      const chatId = [currentUser.username.trim(), searchResult.username.trim()].sort().join('_');
+
+      if (receivedData.chatId === chatId) {
+        setChatHistory(prev => [...prev, receivedData]);
+      }
+    }
+
   }
   useEffect(()=>{
     if(!currentUser) return;
@@ -120,7 +128,7 @@ const HomePage = () => {
       return;
     }
   
-    const res = await fetch(`http://localhost:3000/app/${searched}`,{
+    const res = await fetch(`/app/${searched}`,{
       method:"GET",
       headers:{
         "Content-Type":"application/json"
@@ -144,7 +152,7 @@ const HomePage = () => {
       return;
     }
     const toFetch = searchResult.username;
-    const res = await fetch(`http://localhost:3000/app/chat/${toFetch}`,{
+    const res = await fetch(`/app/chat/${toFetch}`,{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       credentials:"include"
@@ -236,7 +244,7 @@ const HomePage = () => {
     const formData = new FormData();
     formData.append("image", file);
 
-    const res = await fetch(`http://localhost:3000/app/images/${searchResult.username}`,{
+    const res = await fetch(`/app/images/${searchResult.username}`,{
       method:"POST",
       body:formData,
       credentials:'include'

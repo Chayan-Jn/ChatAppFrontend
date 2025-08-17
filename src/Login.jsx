@@ -11,7 +11,7 @@ const Login = ()=>{
 
     async function handleSumbit(e){
         e.preventDefault();
-        const res = await fetch('http://localhost:3000/app/login',{
+        const res = await fetch('/app/login',{
             method:"POST",
             headers:{"Content-Type":"application/json"},
             body:JSON.stringify({username,password}),
@@ -28,8 +28,8 @@ const Login = ()=>{
             console.log("Logged in, redirecting to home page")
         },500)
     }
-    return (<div id="main">
-        <h1 id="title">login</h1>
+    return (<div id="login-main">
+        <h1 id="title">Login</h1>
         {loginMessage && 
             <div id="login-output">
                 <h1>{loginMessage}</h1>
