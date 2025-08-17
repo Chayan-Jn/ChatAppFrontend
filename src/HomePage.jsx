@@ -260,6 +260,11 @@ const HomePage = () => {
       setPreviewUrl(null);
   }
 
+  const closeImage = ()=>{
+    setSelectedImage(null);
+    setPreviewUrl(null);
+  }
+
   return (
     <div className="container">
         <nav className='main-nav'>
@@ -354,6 +359,7 @@ const HomePage = () => {
                   {previewUrl && (
                     <div className="preview">
                       <img src={previewUrl} alt="preview" style={{ maxHeight: '100px' }} />
+                      <div onClick ={closeImage} className='remove-img'>X</div>
                     </div>
                   )}
                   <input type='file' id='image-file' 

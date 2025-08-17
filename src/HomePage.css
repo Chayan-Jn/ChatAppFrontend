@@ -219,7 +219,7 @@ main{
     white-space: pre-wrap;
     word-break: break-word;
     overflow-wrap: anywhere;
-    box-shadow: 5px 5px 3px rgb(7, 7, 7); 
+    object-fit: cover;
 }
 
 .receiver{
@@ -249,6 +249,7 @@ main{
     padding: 8px 12px;
     font-weight: bolder;
     font-size: large;
+    box-shadow: 5px 5px 3px rgb(7, 7, 7);
 
 }
 
@@ -339,4 +340,26 @@ main{
 
 .gallery:hover{
     color: crimson;
+}
+
+.preview{
+    max-height: max(100px,10vh);
+    position: relative;
+}
+
+.remove-img{
+    position: absolute;
+    width: max(30px);
+    border-radius: 15%;
+    color:white;
+    top:5px;
+    right:5px;  
+    font-weight: bold;
+    background-color: rgba(162, 57, 16, 0.609);
+    text-align: center;
+}
+
+.remove-img:hover{
+    background-color: orangered;
+    cursor: pointer;
 }
