@@ -87,7 +87,10 @@ const HomePage = () => {
   
   const handleReceivedMsg = (receivedData)=>{
     if (!currentUser) return;
-    if(receivedData.sender !== currentUser?.userId)
+    const currentChatId = [searchResult.username,currentUser.username].sort().join('_');
+    console.log(currentUser);
+    console.log(`Received chatId is ${receivedData.chatId} \n Current Rooms chatId is ${currentChatId}`)
+    if(receivedData.sender !== currentUser?.userId && currentChatId == receivedData.chatId)
       setChatHistory(prev=>[...prev,receivedData])
   }
   useEffect(()=>{
@@ -104,12 +107,18 @@ const HomePage = () => {
       socket.off('receive-msg',handleReceivedMsg);
     }
     
-  },[currentUser]);
+  },[currentUser,searchResult.username]);
+  // If you dont add searchResult.username
+  // The msgs wont be updated properly
 
   useEffect(()=>{
     if(rightContainerRef.current){
-      rightContainerRef.current.scrollTop = rightContainerRef.current.scrollHeight;
+      const timeoutId = setTimeout(()=>{
+        rightContainerRef.current.scrollTop = rightContainerRef.current.scrollHeight;
+      },0);
+      return ()=> clearTimeout(timeoutId);
     }
+
   },[chatHistory]);
 
   async function handleClick(e){
